@@ -15,12 +15,14 @@ namespace Investry.Application.Features.Investments.Commands.CreateInvestment
         private readonly IUnitOfWork _unitOfWork;
         private readonly IIdentityService _identityService;
         private readonly IEmailService _emailService;
+        private readonly ICacheService _cache;
 
-        public CreateInvestmentHandler(IUnitOfWork unitOfWork, IIdentityService identityService, IEmailService emailService)
+        public CreateInvestmentHandler(IUnitOfWork unitOfWork, IIdentityService identityService, IEmailService emailService, ICacheService cache)
         {
             _unitOfWork = unitOfWork;
             _identityService = identityService;
             _emailService = emailService;
+            _cache = cache;
         }
         public async Task<Result<Guid>> Handle(CreateInvestmentCommand request, CancellationToken cancellationToken)
         {
@@ -295,6 +297,9 @@ namespace Investry.Application.Features.Investments.Commands.CreateInvestment
                         "
             };
             await _emailService.SendAsync(email);
+
+            await _cache.RemoveAsync("all-projects");
+            await _cache.RemoveAsync($"project-details-{request.ProjectId}");
 
             scope.Complete();
 

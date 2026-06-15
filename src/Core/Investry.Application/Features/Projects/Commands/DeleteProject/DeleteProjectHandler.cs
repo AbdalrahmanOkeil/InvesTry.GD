@@ -1,4 +1,5 @@
 ﻿using Investry.Application.Common;
+using Investry.Application.Contracts.Infrastructure;
 using Investry.Application.Contracts.Persistence;
 using Investry.Domain.Enums;
 using MediatR;
@@ -8,10 +9,12 @@ namespace Investry.Application.Features.Projects.Commands.DeleteProject
     public class DeleteProjectHandler : IRequestHandler<DeleteProjectCommand, Result<bool>>
     {
         private readonly IUnitOfWork _unitOfWork;
+        private readonly ICacheService _cache;
 
-        public DeleteProjectHandler(IUnitOfWork unitOfWork)
+        public DeleteProjectHandler(IUnitOfWork unitOfWork, ICacheService cache)
         {
             _unitOfWork = unitOfWork;
+            _cache = cache;
         }
         public async Task<Result<bool>> Handle(DeleteProjectCommand request, CancellationToken cancellationToken)
         {
@@ -75,6 +78,9 @@ namespace Investry.Application.Features.Projects.Commands.DeleteProject
             }
 
             await _unitOfWork.SaveAsync();
+
+            await _cache.RemoveAsync($"founder-projects-{request.UserId}");
+            await _cache.RemoveAsync($"project-details-{request.ProjectId}");
 
             return Result<bool>.Success(true);
         }

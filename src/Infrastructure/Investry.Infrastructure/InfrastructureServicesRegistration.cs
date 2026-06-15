@@ -8,6 +8,7 @@ using Investry.Infrastructure.Media;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Investry.Infrastructure.Payments;
+using Investry.Infrastructure.Services;
 
 namespace Investry.Infrastructure
 {
@@ -34,6 +35,13 @@ namespace Investry.Infrastructure
 
             services.Configure<StripeSettings>(configuration.GetSection("StripeSettings"));
             services.AddScoped<IPaymentService, PaymentService>();
+
+            services.AddStackExchangeRedisCache(options =>
+            {
+                options.Configuration = configuration.GetConnectionString("Redis");
+            });
+
+            services.AddScoped<ICacheService, RedisCacheService>();
 
             return services;
         }

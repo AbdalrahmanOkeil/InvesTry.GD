@@ -11,11 +11,13 @@ namespace Investry.Application.Features.Projects.Commands.CreateProject
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMediaService _mediaService;
+        private readonly ICacheService _cache;
 
-        public CreateProjectHandler(IUnitOfWork unitOfWork, IMediaService mediaService)
+        public CreateProjectHandler(IUnitOfWork unitOfWork, IMediaService mediaService, ICacheService cache)
         {
             _unitOfWork = unitOfWork;
             _mediaService = mediaService;
+            _cache = cache;
         }
 
         public async Task<Result<Guid>> Handle(CreateProjectCommand request, CancellationToken cancellationToken)
@@ -118,6 +120,9 @@ namespace Investry.Application.Features.Projects.Commands.CreateProject
             await _unitOfWork.ProjectRepository.AddAsync(project);
 
             await _unitOfWork.SaveAsync();
+
+            await _cache.RemoveAsync($"founder-projects-{request.UserId}");
+            await _cache.RemoveAsync("all-projects");
 
             return Result<Guid>.Success(project.Id);
         }
