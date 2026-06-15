@@ -10,11 +10,13 @@ namespace Investry.Application.Features.Users.Commands.UploadProfilePicture
     {
         private readonly IIdentityService _identityService;
         private readonly IMediaService _mediaService;
+        private readonly ICacheService _cache;
 
-        public UploadProfilePictureHandler(IIdentityService identityService, IMediaService mediaService)
+        public UploadProfilePictureHandler(IIdentityService identityService, IMediaService mediaService, ICacheService cache)
         {
             _identityService = identityService;
             _mediaService = mediaService;
+            _cache = cache;
         }
         public async Task<Result<string>> Handle(UploadProfilePictureCommand request, CancellationToken cancellationToken)
         {
@@ -31,6 +33,8 @@ namespace Investry.Application.Features.Users.Commands.UploadProfilePicture
 
             if (!updateResult)
                 return Result<string>.Failure(new List<Error> { new Error("User.UpdateFailed", "Failed to update user profile picture", ErrorType.Failure) });
+
+            await _cache.RemoveAsync($"profile-{request.UserId}");
 
             return Result<string>.Success(url);
         }

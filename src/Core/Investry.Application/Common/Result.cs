@@ -1,4 +1,6 @@
-﻿namespace Investry.Application.Common
+﻿using System.Text.Json.Serialization;
+
+namespace Investry.Application.Common
 {
     public class Result<T>
     {
@@ -7,6 +9,7 @@
         public T Value { get; private set; }
         public bool IsFailure => !IsSuccess;
 
+        [JsonConstructor]
         protected Result(bool isSuccess, List<Error> errors, T value)
         {
             IsSuccess = isSuccess;

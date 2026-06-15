@@ -1,4 +1,5 @@
 ﻿using FluentValidation;
+using Investry.Application.Behaviors.Caching;
 using Investry.Application.Common.Mappings;
 using Investry.Application.Features.Projects.Commands.CreateProject;
 using Microsoft.Extensions.DependencyInjection;
@@ -12,6 +13,8 @@ namespace Investry.Application
         {
             services.AddMediatR(cfg => {
                 cfg.RegisterServicesFromAssemblies(Assembly.GetExecutingAssembly());
+
+                cfg.AddOpenBehavior(typeof(CachingBehavior<,>));
             });
 
             services.AddValidatorsFromAssembly(typeof(CreateProjectCommand).Assembly);

@@ -11,11 +11,13 @@ namespace Investry.Application.Features.Projects.Commands.UpdateProject
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMediaService _mediaService;
+        private readonly ICacheService _cache;
 
-        public UpdateProjectHandler(IUnitOfWork unitOfWork, IMediaService mediaService)
+        public UpdateProjectHandler(IUnitOfWork unitOfWork, IMediaService mediaService, ICacheService cache)
         {
             _unitOfWork = unitOfWork;
             _mediaService = mediaService;
+            _cache = cache;
         }
         public async Task<Result<bool>> Handle(UpdateProjectCommand request, CancellationToken cancellationToken)
         {
@@ -48,7 +50,10 @@ namespace Investry.Application.Features.Projects.Commands.UpdateProject
             await HandleMediaOperations(project, request);
 
             await _unitOfWork.SaveAsync();
-            
+
+            await _cache.RemoveAsync($"founder-projects-{request.UserId}");
+            await _cache.RemoveAsync($"project-details-{request.ProjectId}");
+
             return Result<bool>.Success(true);
         }
 

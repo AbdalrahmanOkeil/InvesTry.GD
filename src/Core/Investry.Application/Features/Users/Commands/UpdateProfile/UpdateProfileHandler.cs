@@ -1,5 +1,6 @@
 ﻿using Investry.Application.Common;
 using Investry.Application.Contracts.Identity;
+using Investry.Application.Contracts.Infrastructure;
 using MediatR;
 
 namespace Investry.Application.Features.Users.Commands.UpdateProfile
@@ -7,10 +8,12 @@ namespace Investry.Application.Features.Users.Commands.UpdateProfile
     public class UpdateProfileHandler : IRequestHandler<UpdateProfileCommand, Result<bool>>
     {
         private readonly IIdentityService _identityService;
+        private readonly ICacheService _cache;
 
-        public UpdateProfileHandler(IIdentityService identityService)
+        public UpdateProfileHandler(IIdentityService identityService, ICacheService cache)
         {
             _identityService = identityService;
+            _cache = cache;
         }
 
         public async Task<Result<bool>> Handle(UpdateProfileCommand request, CancellationToken cancellationToken)
@@ -27,6 +30,9 @@ namespace Investry.Application.Features.Users.Commands.UpdateProfile
                 return Result<bool>.Failure(errors);
             }
             var result = await _identityService.UpdateProfileAsync(request);
+
+            await _cache.RemoveAsync($"profile-{request.UserId}");
+
             return result;
         }
     }
