@@ -45,6 +45,28 @@ Unlike traditional crowdfunding systems, InvesTry integrates:
 - JWT Authentication
 - Clean Architecture Pattern
 
+## 🔹 Caching Layer (Redis)
+
+- Integrated Redis Distributed Cache to improve performance and reduce database load.
+- Implemented using a Clean Architecture-friendly MediatR Pipeline Behavior.
+- Applied Cache-Aside pattern for efficient read optimization.
+
+### Cached Queries:
+- Get All Projects (Investor Feed)
+- Get Project Details
+- Get Founder Projects
+- Get User Profile
+
+### Strategy:
+- Cache-Aside Pattern
+- Key-based caching per entity/user
+- Automatic cache invalidation on data changes (Create / Invest / Publish operations)
+
+### Benefits:
+- Faster API response times
+- Reduced database load
+- Improved scalability for read-heavy operations
+
 ## 🔹 Database
 - SQL Server
 - Entity Framework Core
