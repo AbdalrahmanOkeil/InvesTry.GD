@@ -184,6 +184,24 @@ Instead of manual admin verification, InvesTry integrates with an **External KYC
 
 ---
 
+# Docker Support
+
+The project includes a complete Dockerized environment for simplified setup and deployment.
+
+### Services
+- ASP.NET Core API
+- SQL Server
+- Redis Cache
+
+
+### Run with Docker
+
+```bash
+docker compose up --build
+```
+
+---
+
 #  Installation
 
 ## Clone Repository
@@ -191,3 +209,4 @@ Instead of manual admin verification, InvesTry integrates with an **External KYC
 ```bash
 git clone https://github.com/AbdalrahmanOkeil/InvesTry.GD.git
 cd InvesTry.GD
+```
