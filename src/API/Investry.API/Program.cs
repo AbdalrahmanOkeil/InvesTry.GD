@@ -92,10 +92,10 @@ namespace Investry.API
             // Auto-apply pending migrations
             using (var scope = app.Services.CreateScope())
             {
-                var investryDb = scope.ServiceProvider.GetRequiredService<Investry.Persistence.InvestryDbContext>();
+                var investryDb = scope.ServiceProvider.GetRequiredService<InvestryDbContext>();
                 await investryDb.Database.MigrateAsync();
 
-                var identityDb = scope.ServiceProvider.GetRequiredService<Investry.Identity.InvestryIdentityDbContext>();
+                var identityDb = scope.ServiceProvider.GetRequiredService<InvestryIdentityDbContext>();
                 await identityDb.Database.MigrateAsync();
             }
 
